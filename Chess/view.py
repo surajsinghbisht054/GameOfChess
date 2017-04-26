@@ -1,135 +1,126 @@
+#!/usr/bin/python
+
+# ---------------- READ ME ---------------------------------------------
+# This Script is Created Only For Practise And Educational Purpose Only
+# This Script Is Created For http://bitforestinfo.blogspot.com
+# This Script is Written By
+#
+#
+##################################################
+######## Please Don't Remove Author Name #########
+############### Thanks ###########################
+##################################################
+#
+#
+__author__='''
+
+######################################################
+                By S.S.B Group                          
+######################################################
+
+    Suraj Singh
+    Admin
+    S.S.B Group
+    surajsinghbisht054@gmail.com
+    http://bitforestinfo.blogspot.com/
+
+    Note: We Feel Proud To Be Indian
+######################################################
+'''
+import Tkinter
 from configurations import *
-import controller, model
-try:
-        import Tkinter
-except:
-        import tkinter as Tkinter
+import managements as mg
+from PIL import ImageTk, Image
 
-class PlayerPosition:
-        def  __init__(self, MainBox=None):
-                mapping=MainBox.map
-                canvas=MainBox.canvas
-                st=Tkinter.PhotoImage(file='Icons/elephant_D.gif')
-                p,q,r,s,t=(0,0,0,0,0)#mapping['A1']
-                print p,q,r,s,t
-                MainBox.canvas.create_image(80,90, image=st)
-                canvas.create_rectangle(0,0,64,64,fill='yellow')
-                
-class Model(Tkinter.Tk):
-        def __init__(self):
-                Tkinter.Tk.__init__(self, className='Suraj')
-                # Design Map of Base
-                self.map={}
-                # Creating Base
-                self.create_chess_base()
+def get_color(n):
+    if n%2 == 0:
+        return BOARD_COLOR_1
+    else:
+        return BOARD_COLOR_2
 
-                
+def get_image_handle(x1,y1,tag):
+    get_link = mg.playing_warriors[tag]
+    if get_link:
+        f = Image.open(get_link)
+        f=f.resize((64,64))
+        StoreImg = ImageTk.PhotoImage(f)
+        return (StoreImg, get_link)
+    else:
+        return 
 
+class ChessView(Tkinter.Tk):
+    def __init__(self, *args, **kwargs):
+        Tkinter.Tk.__init__(self, *args, **kwargs)
+        self.imgstore = []
+        self.create_playground_canvas()
+        self.create_squares_on_ground()
+        self.ground.bind("<Button-1>",self.mouse_clicked_player)
+    
+    def player_available_ways(self, t,c):
+        imgid = t[2]
+        self.get_blank_box(mg.attacks_rule[imgid],c,t)
+        return
 
-        # Function For Creating Chess Base
-        def create_chess_base(self):
-                self.create_menu()
-                self.create_canvas()
-                #self.draw_board()
-                #self.touch_detector()
-                PlayerPosition(MainBox=self)
+    def get_blank_box(self, direction,c,t):
+        ['A','B','C','D','E','F','G','H']
+        range(0,8)
+        print c
+        if direction[0]==n:
+            pass
 
-        # Mouse Touch Detector
-        def touch_detector(self):
-                self.canvas.bind("<Button-1>", self.on_square_clicked)
-        # Mouse Touch Coordinates Finder
-        def on_square_clicked(self,event):
-                #print 'Row : {}, Column : {}'.format(event.y/DIMENSION_OF_EACH_SQUARE+1,event.x/DIMENSION_OF_EACH_SQUARE+1)
-                y=event.y/DIMENSION_OF_EACH_SQUARE+1
-                y=y*64
-                x=event.x/DIMENSION_OF_EACH_SQUARE+1
-                x=x*64
-                #print y,x
-                for i in self.area:
-                        a,b,c,d=i
-                        if y==d and x==c:
-                                return {'square':(event.y/DIMENSION_OF_EACH_SQUARE+1,event.x/DIMENSION_OF_EACH_SQUARE+1),'area':i}
-        # Function For Drawing Base Color and Square        
-        def draw_board(self):
-                self.area=[]
-                x1=0
-                y1=0
-                x2=DIMENSION_OF_EACH_SQUARE
-                y2=DIMENSION_OF_EACH_SQUARE
-                color=self.color_changer(color=None)
-                # Mapping Machanizim
-                map_of_row={
-                        0:'A',
-                        1:'B',
-                        2:'C',
-                        3:'D',
-                        4:'E',
-                        5:'F',
-                        6:'G',
-                        7:'H',
-                        8:'I',
-                        9:'J'}
-                map_of_column=range(1,10)
-                for i in range(NUMBER_OF_ROWS):
-                        self.canvas.create_rectangle(x1,y1,x2,y2,fill=color)
-                        X1=0
-                        Y1=y1
-                        X2=DIMENSION_OF_EACH_SQUARE
-                        Y2=y2
-                        for s in range(NUMBER_OF_COLUMNS):
-                                self.canvas.create_rectangle(X1,Y1,X2,Y2,fill=color)
-                                self.area.append((X1,Y1,X2,Y2))
-                                self.map[str(map_of_row[i])+str(map_of_column[s])]=(X1,Y1,X2,Y2, color)
-                                X1=X1+DIMENSION_OF_EACH_SQUARE
-                                X2=X2+DIMENSION_OF_EACH_SQUARE
-                                color=self.color_changer(color=color)
-                        y1=y1+DIMENSION_OF_EACH_SQUARE
-                        y2=y2+DIMENSION_OF_EACH_SQUARE
-                        color=self.color_changer(color=color)
-                #print self.map
-        # Function for creating Canvas
-        def create_canvas(self):
-                canvas_width = NUMBER_OF_COLUMNS *DIMENSION_OF_EACH_SQUARE
-                canvas_height = NUMBER_OF_ROWS * DIMENSION_OF_EACH_SQUARE
-                self.canvas = Tkinter.Canvas(self, width=canvas_width, height=canvas_height)
-                self.canvas.pack(padx=10,pady=10)
-        def color_changer(self, color=None):
-                if color==BOARD_COLOR_1:
-                        return BOARD_COLOR_2
-                else:
-                        return BOARD_COLOR_1
-        def create_menu(self):
-                # Main Menu Bar
-                storeobj=Tkinter.Menu(self)
+        return
 
-                # [Menu] Window Bar
-                menu_bar=Tkinter.Menu(self, tearoff=0)
-                menu_bar.add_command(label='New')
-                menu_bar.add_separator()
-                menu_bar.add_command(label='Exit', command=lambda:self.destroy())
-                menu_bar1=Tkinter.Menu(self, tearoff=0)
-                menu_bar1.add_command(label='System')
-                menu_bar1.add_separator()
-                menu_bar1.add_command(label='Color')
-                menu_bar2=Tkinter.Menu(self, tearoff=0)
-                menu_bar2.add_command(label='Help')
-                menu_bar2.add_separator()
-                menu_bar2.add_command(label='About')
+    def mouse_clicked_player(self, event):
+        c, t = self.return_chess_box_coords()
+        for i in self.ground.find_withtag("chessbox"):
+            color = self.ground.gettags(i)[1]
+            self.ground.itemconfig(i, fill=color)
 
-                # [Main Label Bar]
-                storeobj.add_cascade(label='Menu', menu=menu_bar)
-                storeobj.add_cascade(label='Edit', menu=menu_bar1)
-                storeobj.add_cascade(label='About', menu=menu_bar2)
+        if t[0]=="image":
+            obj = self.ground.find_withtag("{},{},{},{}".format(*c))
+            self.ground.itemconfig("{},{},{},{}".format(*c), fill='blue')
+            self.player_available_ways(t,c)
+        return
 
-                
-                self.config(menu=storeobj)
+    def return_chess_box_coords(self):
+        store = self.ground.find_withtag(Tkinter.CURRENT)
+        obj = self.ground.gettags(store)
+        if "image" in obj:
+            m,n = self.ground.coords(store)
+            x1,y1,x2,y2 = m-32,n-32,m+32,n+32
+            return ((x1,y1,x2,y2), obj)
+        else:
+            return ((self.ground.coords(store)), obj)
 
-if __name__=='__main__':
-        Model().mainloop()
+    def create_squares_on_ground(self):
+        v=0
+        for i,a in enumerate(['A','B','C','D','E','F','G','H']):
+            v=v+1
+            for n in range(0,8):
+                color = get_color(v)
+                v=v+1
+                (x1,y1,x2,y2) = (n*64,i*64,n*64+64,i*64+64)
+                self.ground.create_rectangle(x1,y1,x2,y2, fill=color, tags=("chessbox", color, "{}{}".format(a,n), "{}.0,{}.0,{}.0,{}.0".format(x1,y1,x2,y2)))
+                img = get_image_handle(x1,y1,"{}{}".format(a,n))
+                if img:
+                    self.ground.create_image(x1+32,y1+32, image=img[0], tags=("image",img[1].split("/")[1].split(".")[0],"img-{}{}".format(a,n)))
+        
+                    self.imgstore.append(img)
+        return
 
 
-class View():
-	def __init__(self):
-		pass
+
+    def create_playground_canvas(self):
+        self.ground = Tkinter.Canvas(self, bg="white", width=600, height=600)
+        self.ground.pack()
+        return
 
 
+
+def main():
+    ChessView(className = " Chess Game. By Bitforestinfo").mainloop()
+    return
+
+
+if __name__ == '__main__':
+    main()
